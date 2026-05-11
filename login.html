@@ -1,0 +1,662 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Đăng nhập · Trợ Lý Học Đường</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy-950: #070f1a;
+      --navy-900: #0f1c2e;
+      --navy-800: #162540;
+      --navy-700: #1e3356;
+      --navy-600: #284a77;
+      --navy-500: #3461a0;
+      --blue:     #2563eb;
+      --blue-lt:  #3b82f6;
+      --sky:      #38bdf8;
+      --surface:  #ffffff;
+      --gray-50:  #f7f9fc;
+      --gray-100: #eef2f8;
+      --gray-200: #dde4f0;
+      --gray-400: #94a3b8;
+      --gray-600: #475569;
+      --gray-900: #0f172a;
+      --success:  #059669;
+      --error:    #dc2626;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: var(--gray-50);
+      height: 100vh;
+      height: 100svh;
+      overflow: hidden;
+      color: var(--gray-900);
+    }
+
+    /* ── Layout ─────────────────────────────────── */
+    .page { display: flex; height: 100%; }
+
+    /* LEFT PANEL */
+    .panel-left {
+      flex: 1.05;
+      background: var(--navy-900);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      padding: 36px 48px;
+      color: white;
+      overflow: hidden;
+    }
+
+    /* Grid texture */
+    .panel-left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    /* Radial glow */
+    .panel-left::after {
+      content: '';
+      position: absolute;
+      width: 600px; height: 600px;
+      top: -200px; right: -200px;
+      background: radial-gradient(circle, rgba(37,99,235,.25) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .left-content { position: relative; z-index: 2; display: flex; flex-direction: column; height: 100%; }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      text-decoration: none;
+      color: white;
+      font-weight: 700;
+      font-size: 1.1rem;
+      letter-spacing: -.2px;
+    }
+    .brand-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, var(--blue-lt), var(--blue));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.2rem; font-weight: 800;
+      box-shadow: 0 6px 20px rgba(37,99,235,.4);
+    }
+
+    .hero { margin: auto 0; padding: 40px 0; }
+
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(56,189,248,.12);
+      border: 1px solid rgba(56,189,248,.25);
+      color: var(--sky);
+      font-size: .75rem;
+      font-weight: 700;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 999px;
+      margin-bottom: 24px;
+    }
+
+    .hero h1 {
+      font-size: clamp(2rem, 3.2vw, 2.8rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -.03em;
+      margin-bottom: 16px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(135deg, var(--sky), #818cf8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .hero p {
+      color: rgba(255,255,255,.6);
+      font-size: .95rem;
+      line-height: 1.7;
+      max-width: 440px;
+      margin-bottom: 36px;
+    }
+
+    .feat-list { display: flex; flex-direction: column; gap: 16px; }
+    .feat {
+      display: flex;
+      gap: 14px;
+      align-items: flex-start;
+    }
+    .feat-dot {
+      width: 36px; height: 36px; min-width: 36px;
+      border-radius: 10px;
+      background: rgba(255,255,255,.07);
+      border: 1px solid rgba(255,255,255,.1);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+    .feat-text strong { display: block; font-size: .9rem; margin-bottom: 2px; }
+    .feat-text span { font-size: .82rem; color: rgba(255,255,255,.5); line-height: 1.5; }
+
+    .left-footer {
+      font-size: .75rem;
+      color: rgba(255,255,255,.28);
+      padding-top: 20px;
+    }
+
+    /* RIGHT PANEL */
+    .panel-right {
+      flex: .95;
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 36px;
+      overflow-y: auto;
+    }
+
+    .form-wrap { width: 100%; max-width: 420px; }
+
+    /* Mobile brand */
+    .mobile-brand { display: none; margin-bottom: 32px; }
+    .mobile-brand .brand { color: var(--gray-900); }
+    .mobile-brand .brand-icon { background: linear-gradient(135deg, var(--blue), #1d4ed8); }
+
+    .form-heading { margin-bottom: 28px; }
+    .form-heading h2 {
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -.03em;
+      color: var(--navy-900);
+      margin-bottom: 6px;
+    }
+    .form-heading p { font-size: .9rem; color: var(--gray-400); line-height: 1.6; }
+
+    /* Fields */
+    .field { margin-bottom: 18px; }
+    .field label {
+      display: block;
+      font-size: .82rem;
+      font-weight: 700;
+      color: var(--navy-800);
+      margin-bottom: 8px;
+      letter-spacing: .01em;
+    }
+    .input-wrap { position: relative; }
+    .input-icon {
+      position: absolute;
+      left: 16px; top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-400);
+      pointer-events: none;
+      transition: color .2s;
+    }
+    .input-wrap input {
+      width: 100%;
+      padding: 13px 16px 13px 46px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 12px;
+      font-size: .95rem;
+      font-family: inherit;
+      color: var(--gray-900);
+      background: var(--gray-50);
+      outline: none;
+      transition: border-color .2s, box-shadow .2s, background .2s;
+    }
+    .input-wrap input::placeholder { color: var(--gray-400); }
+    .input-wrap input:focus {
+      border-color: var(--blue);
+      background: white;
+      box-shadow: 0 0 0 3px rgba(37,99,235,.1);
+    }
+    .input-wrap:focus-within .input-icon { color: var(--blue); }
+
+    /* Row options */
+    .row-opts {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 22px;
+      font-size: .84rem;
+    }
+    .chk-label {
+      display: flex; align-items: center; gap: 8px;
+      cursor: pointer; color: var(--gray-600);
+    }
+    .chk-label input { display: none; }
+    .chk-box {
+      width: 18px; height: 18px;
+      border: 1.5px solid var(--gray-200);
+      border-radius: 5px;
+      display: flex; align-items: center; justify-content: center;
+      transition: all .2s;
+    }
+    .chk-label input:checked + .chk-box {
+      background: var(--blue); border-color: var(--blue);
+    }
+    .chk-label input:checked + .chk-box::after {
+      content: '';
+      width: 5px; height: 9px;
+      border: 2px solid white;
+      border-top: none; border-left: none;
+      transform: rotate(45deg) translate(0px, -1px);
+    }
+    .forgot { color: var(--blue); font-weight: 600; text-decoration: none; }
+    .forgot:hover { text-decoration: underline; }
+
+    /* Submit */
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--navy-700), var(--blue));
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: .97rem;
+      font-weight: 700;
+      font-family: inherit;
+      cursor: pointer;
+      transition: transform .2s, box-shadow .2s, opacity .2s;
+      box-shadow: 0 6px 20px rgba(37,99,235,.3);
+      margin-bottom: 14px;
+    }
+    .btn-submit:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 28px rgba(37,99,235,.4);
+    }
+    .btn-submit:disabled { opacity: .65; cursor: not-allowed; }
+
+    /* Messages */
+    .msg-box {
+      display: none;
+      padding: 11px 14px;
+      border-radius: 10px;
+      font-size: .86rem;
+      font-weight: 500;
+      margin-bottom: 14px;
+    }
+    .msg-box.success { display: flex; gap: 8px; align-items: center; background: #d1fae5; color: #065f46; border: 1px solid #a7f3d0; }
+    .msg-box.error   { display: flex; gap: 8px; align-items: center; background: #fee2e2; color: #991b1b; border: 1px solid #fecaca; }
+    .msg-box.info    { display: flex; gap: 8px; align-items: center; background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+
+    /* Divider */
+    .divider {
+      display: flex; align-items: center; gap: 12px;
+      font-size: .8rem; color: var(--gray-400);
+      margin: 16px 0;
+    }
+    .divider::before, .divider::after { content: ''; flex: 1; height: 1px; background: var(--gray-200); }
+
+    /* Demo card */
+    .demo-card {
+      background: var(--gray-50);
+      border: 1.5px dashed var(--gray-200);
+      border-radius: 12px;
+      padding: 14px 16px;
+    }
+    .demo-label { font-size: .78rem; color: var(--gray-400); font-weight: 600; margin-bottom: 10px; letter-spacing: .04em; text-transform: uppercase; }
+    .demo-creds { display: flex; flex-wrap: wrap; gap: 8px; }
+    .demo-btn {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-size: .8rem;
+      font-family: inherit;
+      cursor: pointer;
+      color: var(--navy-800);
+      font-weight: 600;
+      transition: border-color .15s, background .15s;
+    }
+    .demo-btn:hover { border-color: var(--blue); background: #eff6ff; color: var(--blue); }
+    .demo-btn span { font-weight: 400; color: var(--gray-400); margin-left: 4px; }
+
+    /* Footer link */
+    .form-footer { text-align: center; margin-top: 20px; font-size: .88rem; color: var(--gray-400); }
+    .form-footer a { color: var(--blue); font-weight: 700; }
+
+    /* Back */
+    .back-link { margin-top: 16px; text-align: center; }
+    .back-link a {
+      display: inline-flex; align-items: center; gap: 6px;
+      font-size: .82rem; color: var(--gray-400); transition: color .2s;
+    }
+    .back-link a:hover { color: var(--blue); }
+
+    /* Spinner */
+    .spinner {
+      display: inline-block;
+      width: 16px; height: 16px;
+      border: 2px solid rgba(255,255,255,.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin .6s linear infinite;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Forgot modal */
+    .modal-overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(7,15,26,.65);
+      backdrop-filter: blur(5px);
+      z-index: 9999;
+      align-items: center; justify-content: center;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-box {
+      background: white;
+      border-radius: 24px;
+      padding: 36px 32px;
+      max-width: 380px;
+      width: 90%;
+      text-align: center;
+    }
+    .modal-box h3 { font-size: 1.2rem; font-weight: 800; color: var(--navy-900); margin: 12px 0 8px; }
+    .modal-box p { color: var(--gray-400); font-size: .88rem; line-height: 1.6; margin-bottom: 20px; }
+    .modal-input {
+      width: 100%; padding: 12px 16px;
+      border: 1.5px solid var(--gray-200); border-radius: 10px;
+      font-family: inherit; font-size: .95rem;
+      outline: none; margin-bottom: 16px;
+    }
+    .modal-input:focus { border-color: var(--blue); box-shadow: 0 0 0 3px rgba(37,99,235,.1); }
+    .modal-btns { display: flex; gap: 10px; justify-content: center; }
+    .modal-btn-pri, .modal-btn-sec {
+      padding: 10px 22px; border-radius: 999px;
+      font-family: inherit; font-size: .88rem; font-weight: 700;
+      cursor: pointer; border: none; transition: .2s;
+    }
+    .modal-btn-pri { background: var(--blue); color: white; }
+    .modal-btn-pri:hover { background: #1d4ed8; }
+    .modal-btn-sec { background: var(--gray-100); color: var(--gray-600); }
+    .modal-btn-sec:hover { background: var(--gray-200); }
+    .modal-msg { margin-top: 12px; font-size: .84rem; min-height: 20px; color: var(--blue); }
+
+    /* Responsive */
+    @media (max-width: 860px) {
+      .panel-left { display: none; }
+      .panel-right { flex: 1; padding: 32px 24px; }
+      .mobile-brand { display: block; }
+    }
+    @media (max-width: 480px) {
+      body { overflow: auto; height: auto; }
+      .panel-right { padding: 28px 18px; }
+      .form-heading h2 { font-size: 1.55rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── LEFT PANEL ────────────────────────── -->
+  <div class="panel-left">
+    <div class="left-content">
+      <a href="index.html" class="brand">
+        <div class="brand-icon">H</div>
+        <span>Trợ Lý Học Đường</span>
+      </a>
+
+      <div class="hero">
+        <div class="hero-badge">🎓 Nền tảng AI học tập</div>
+        <h1>Hiểu sâu bản chất,<br /><em>Bứt phá điểm số</em></h1>
+        <p>Trợ lý AI đầu tiên tại Việt Nam giúp học sinh THPT phát hiện lỗ hổng kiến thức và rèn luyện tư duy thay vì chỉ cung cấp lời giải mẫu.</p>
+
+        <div class="feat-list">
+          <div class="feat">
+            <div class="feat-dot">📈</div>
+            <div class="feat-text">
+              <strong>Phân tích lỗi sai chuyên sâu</strong>
+              <span>AI chỉ rõ nguyên nhân sai ở từng bước giải</span>
+            </div>
+          </div>
+          <div class="feat">
+            <div class="feat-dot">🔍</div>
+            <div class="feat-text">
+              <strong>Phát hiện lỗ hổng kiến thức</strong>
+              <span>Đề xuất lộ trình ôn tập cá nhân hóa</span>
+            </div>
+          </div>
+          <div class="feat">
+            <div class="feat-dot">🎯</div>
+            <div class="feat-text">
+              <strong>Trợ giảng 24/7</strong>
+              <span>Giải đáp tức thì mọi khái niệm khó hiểu</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="left-footer">© 2024 Trợ Lý Học Đường · Nền tảng AI Cá nhân hóa</div>
+    </div>
+  </div>
+
+  <!-- ── RIGHT PANEL ───────────────────────── -->
+  <div class="panel-right">
+    <div class="form-wrap">
+
+      <div class="mobile-brand">
+        <a href="index.html" class="brand">
+          <div class="brand-icon">H</div>
+          <span>Trợ Lý Học Đường</span>
+        </a>
+      </div>
+
+      <div class="form-heading">
+        <h2>Chào mừng trở lại 👋</h2>
+        <p>Nhập thông tin tài khoản để truy cập nền tảng học tập.</p>
+      </div>
+
+      <div id="loginMsg" class="msg-box"></div>
+
+      <form id="loginForm" autocomplete="on">
+        <div class="field">
+          <label for="loginEmail">Email</label>
+          <div class="input-wrap">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+            <input type="email" id="loginEmail" placeholder="email@cua.ban" autocomplete="email" required />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="loginPassword">Mật khẩu</label>
+          <div class="input-wrap">
+            <svg class="input-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <input type="password" id="loginPassword" placeholder="Mật khẩu của bạn" autocomplete="current-password" required />
+          </div>
+        </div>
+
+        <div class="row-opts">
+          <label class="chk-label">
+            <input type="checkbox" id="rememberMe" />
+            <span class="chk-box"></span>
+            <span>Ghi nhớ tôi</span>
+          </label>
+          <a href="#" class="forgot" id="forgotBtn">Quên mật khẩu?</a>
+        </div>
+
+        <button type="submit" class="btn-submit" id="loginBtn">Đăng nhập</button>
+      </form>
+
+      <div class="divider"><span>Tài khoản demo</span></div>
+
+      <div class="demo-card">
+        <div class="demo-label">Bấm để tự động điền</div>
+        <div class="demo-creds">
+          <button class="demo-btn" onclick="fillDemo('student@demo.com','demo123')">
+            🎓 Học sinh <span>demo123</span>
+          </button>
+          <button class="demo-btn" onclick="fillDemo('teacher@demo.com','demo123')">
+            📚 Giáo viên <span>demo123</span>
+          </button>
+          <button class="demo-btn" onclick="fillDemo('admin@demo.com','demo123')">
+            ⚙️ Admin <span>demo123</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="form-footer">
+        Chưa có tài khoản? <a href="signup.html">Đăng ký ngay</a>
+      </div>
+      <div class="back-link">
+        <a href="index.html">
+          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+          Về trang chủ
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Forgot modal -->
+<div class="modal-overlay" id="forgotModal">
+  <div class="modal-box">
+    <div style="font-size:2.5rem">🔐</div>
+    <h3>Lấy lại mật khẩu</h3>
+    <p>Nhập email đã đăng ký. Hệ thống sẽ hiển thị mật khẩu của bạn (demo).</p>
+    <input class="modal-input" type="email" id="resetEmail" placeholder="Email của bạn" />
+    <div class="modal-btns">
+      <button class="modal-btn-pri" onclick="doReset()">Kiểm tra</button>
+      <button class="modal-btn-sec" onclick="closeReset()">Đóng</button>
+    </div>
+    <div class="modal-msg" id="resetMsg"></div>
+  </div>
+</div>
+
+<script>
+  const USERS_KEY = 'studymate_users';
+
+  // ── Seed demo accounts ─────────────────────────────
+  function initDemoUsers() {
+    let users = getUsers();
+    const demoEmails = ['student@demo.com', 'teacher@demo.com', 'admin@demo.com'];
+    const hasDemo = demoEmails.every(e => users.find(u => u.email === e));
+    if (!hasDemo) {
+      const demos = [
+        { id: 1001, name: 'Học Sinh Demo', email: 'student@demo.com', password: 'demo123', role: 'student', avatar: 'https://ui-avatars.com/api/?background=1e3356&color=fff&name=Hoc+Sinh', status: 'active', created_at: new Date().toISOString() },
+        { id: 1002, name: 'Giáo Viên Demo', email: 'teacher@demo.com', password: 'demo123', role: 'teacher', avatar: 'https://ui-avatars.com/api/?background=1e3356&color=fff&name=Giao+Vien', status: 'active', created_at: new Date().toISOString() },
+        { id: 1003, name: 'Admin Demo', email: 'admin@demo.com', password: 'demo123', role: 'admin', avatar: 'https://ui-avatars.com/api/?background=1e3356&color=fff&name=Admin', status: 'active', created_at: new Date().toISOString() },
+      ];
+      // merge without overwriting existing
+      demos.forEach(d => { if (!users.find(u => u.email === d.email)) users.push(d); });
+      localStorage.setItem(USERS_KEY, JSON.stringify(users));
+    }
+  }
+
+  function getUsers() {
+    try { return JSON.parse(localStorage.getItem(USERS_KEY) || '[]'); }
+    catch { return []; }
+  }
+
+  // ── UI helpers ─────────────────────────────────────
+  function showMsg(text, type) {
+    const el = document.getElementById('loginMsg');
+    const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+    el.textContent = (icons[type] || '') + ' ' + text;
+    el.className = 'msg-box ' + type;
+    el.style.display = 'flex';
+    if (type !== 'success') return;
+    setTimeout(() => { el.style.display = 'none'; }, 4000);
+  }
+
+  function setLoading(on) {
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = on;
+    btn.innerHTML = on ? 'Đang xử lý <span class="spinner"></span>' : 'Đăng nhập';
+  }
+
+  function fillDemo(email, pw) {
+    document.getElementById('loginEmail').value = email;
+    document.getElementById('loginPassword').value = pw;
+    document.getElementById('loginEmail').focus();
+  }
+
+  // ── Login logic ────────────────────────────────────
+  function doLogin(email, password) {
+    const users = getUsers();
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase() && u.password === password);
+    if (!user) throw new Error('Sai email hoặc mật khẩu. Hãy kiểm tra lại.');
+    if (user.status === 'banned') throw new Error('Tài khoản của bạn đã bị khóa.');
+    return user;
+  }
+
+  document.getElementById('loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('loginEmail').value.trim();
+    const password = document.getElementById('loginPassword').value;
+
+    if (!email || !password) {
+      showMsg('Vui lòng nhập đầy đủ email và mật khẩu.', 'error');
+      return;
+    }
+
+    setLoading(true);
+    await new Promise(r => setTimeout(r, 600)); // natural feel
+
+    try {
+      const user = doLogin(email, password);
+      const userData = { id: user.id, name: user.name, email: user.email, role: user.role, avatar: user.avatar, status: user.status, created_at: user.created_at };
+      sessionStorage.setItem('currentUser', JSON.stringify(userData));
+      sessionStorage.setItem('authToken', 'local-' + user.id);
+      showMsg(`Chào mừng ${user.name}! Đang chuyển trang...`, 'success');
+      setTimeout(() => { window.location.href = 'dashboard.html'; }, 1200);
+    } catch (err) {
+      showMsg(err.message, 'error');
+      setLoading(false);
+    }
+  });
+
+  // ── Forgot password ────────────────────────────────
+  document.getElementById('forgotBtn').addEventListener('click', (e) => {
+    e.preventDefault();
+    document.getElementById('forgotModal').classList.add('open');
+  });
+
+  function closeReset() {
+    document.getElementById('forgotModal').classList.remove('open');
+    document.getElementById('resetEmail').value = '';
+    document.getElementById('resetMsg').textContent = '';
+  }
+
+  function doReset() {
+    const email = document.getElementById('resetEmail').value.trim();
+    const msg = document.getElementById('resetMsg');
+    if (!email) { msg.textContent = '❌ Vui lòng nhập email.'; msg.style.color = '#dc2626'; return; }
+    const users = getUsers();
+    const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+    if (!user) { msg.textContent = '❌ Email chưa được đăng ký.'; msg.style.color = '#dc2626'; return; }
+    msg.textContent = `✅ Mật khẩu của bạn là: ${user.password}`;
+    msg.style.color = '#059669';
+  }
+
+  document.getElementById('forgotModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('forgotModal')) closeReset();
+  });
+
+  // ── Check existing session ─────────────────────────
+  (function() {
+    initDemoUsers();
+    const s = sessionStorage.getItem('currentUser');
+    if (s) { try { const u = JSON.parse(s); if (u?.id) window.location.href = 'dashboard.html'; } catch {} }
+  })();
+</script>
+</body>
+</html>
